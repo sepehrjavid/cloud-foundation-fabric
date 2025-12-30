@@ -614,6 +614,10 @@ module "ilb-l7" {
       # map of `project_id` => `connection_limit`
       (var.project_id) = 10
     }
+    domain_name = {
+      europe-west1 = var.psc_domain_name_ew1
+      europe-west4 = var.psc_domain_name_ew4
+    }
   }
 }
 # tftest modules=1 resources=9
