@@ -169,18 +169,18 @@ variable "protocol" {
 }
 
 variable "service_attachment" {
-  description = "PSC service attachment."
+  description = "PSC service attachments."
   type = object({
-    nat_subnets           = map(list(string))
     automatic_connection  = optional(bool, false)
     consumer_accept_lists = optional(map(string), {})
     consumer_reject_lists = optional(list(string))
     description           = optional(string)
     domain_name           = optional(map(string))
     enable_proxy_protocol = optional(bool, false)
+    nat_subnets           = map(list(string))
     reconcile_connections = optional(bool)
   })
-  default = {}
+  default = null
 }
 
 variable "service_directory_registration" {

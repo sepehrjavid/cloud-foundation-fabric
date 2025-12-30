@@ -100,12 +100,12 @@ resource "google_compute_target_https_proxy" "default" {
 }
 
 resource "google_compute_service_attachment" "default" {
-  for_each       = google_compute_global_forwarding_rule.forwarding_rules
+  for_each       = var.service_attachment == null ? {} : google_compute_global_forwarding_rule.forwarding_rules
   project        = var.project_id
   region         = each.key
   name           = each.value.name
   description    = var.service_attachment.description
-  target_service = google_compute_global_forwarding_rule.forwarding_rules[each.key].id
+  target_service = each.value.id
   nat_subnets    = var.service_attachment.nat_subnets[each.key]
   connection_preference = (
     var.service_attachment.automatic_connection

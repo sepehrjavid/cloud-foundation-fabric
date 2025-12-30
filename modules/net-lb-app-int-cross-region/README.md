@@ -424,7 +424,9 @@ module "ilb-l7" {
   backend_service_configs = {
     default = {
       backends = [{
-        group = "neg"
+        group = "neg-ew1"
+      }, {
+        group = "neg-ew4"
       }]
       health_checks = []
     }
@@ -555,6 +557,67 @@ module "ilb-l7" {
 }
 # tftest modules=1 resources=7
 ```
+
+### PSC service attachment
+The optional `service_attachment` variable allows [publishing Private Service Connect service](https://cloud.google.com/vpc/docs/configure-private-service-connect-producer) by configuring service attachment for all forwarding rules in every configured region.
+
+```hcl
+module "ilb-l7" {
+  source     = "./fabric/modules/net-lb-app-int-cross-region"
+  name       = "ilb-test"
+  project_id = var.project_id
+  backend_service_configs = {
+    default = {
+      backends = [{
+        group = "neg-ew1"
+      }, {
+        group = "neg-ew4"
+      }]
+      health_checks = []
+    }
+  }
+  health_check_configs = {}
+  neg_configs = {
+    neg-ew1 = {
+      cloudrun = {
+        region = "europe-west1"
+        target_service = {
+          name = "my-run-service-ew1"
+        }
+      }
+    }
+    neg-ew4 = {
+      cloudrun = {
+        region = "europe-west4"
+        target_service = {
+          name = "my-run-service-ew4"
+        }
+      }
+    }
+  }
+  vpc_config = {
+    network = var.vpc.self_link
+    subnetworks = {
+      europe-west1 = var.subnet1.self_link
+      europe-west4 = var.subnet2.self_link
+    }
+  }
+
+  service_attachment = {
+    nat_subnets = {
+      europe-west1 = [var.subnet_psc_ew1.self_link]
+      europe-west4 = [var.subnet_psc_ew4.self_link]
+    }
+    reconcile_connections = false
+    consumer_accept_lists = {
+      # map of `project_id` => `connection_limit`
+      (var.project_id) = 10
+    }
+  }
+}
+# tftest modules=1 resources=9
+```
+
 
 ### Complex example
 
