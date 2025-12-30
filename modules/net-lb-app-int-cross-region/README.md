@@ -18,6 +18,7 @@ Due to the complexity of the underlying resources, changes to the configuration 
     - [Serverless NEG creation](#serverless-neg-creation)
     - [Private Service Connect NEG creation](#private-service-connect-neg-creation)
   - [URL Map](#url-map)
+  - [PSC service attachment](#psc-service-attachment)
   - [Complex example](#complex-example)
 - [Deploying changes to load balancer configurations](#deploying-changes-to-load-balancer-configurations)
 - [Recipes](#recipes)
